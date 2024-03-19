@@ -31,6 +31,8 @@ app.listen(port, () => {
 
 // Configure connection pool
 const pool = new pg.Pool({
+  connectionString: process.env.DB_URL,
+  ssl: { rejectUnauthorized: false }, // This option might be required depending on your PostgreSQL server settings
   user: process.env.USERNAME,
   host: process.env.HOST,
   database: process.env.DATABASE,
