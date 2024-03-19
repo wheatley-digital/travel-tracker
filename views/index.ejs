@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="styles/main.css" />
+    <title>Document</title>
+  </head>
+
+  <body>
+    <% if (user !== "No User") { %>
+      <ul id="nav" class="nav nav-tabs">
+        <form class="users-tab" action="/select-user" method="post">
+          <% users.forEach(user=>{ %>
+            <input type="submit" class="nav-item" name="user" value="<%= user %>">
+          </li>
+          <% }) %>
+        </form>
+      </ul>
+      <div id="add-delete-users-container">
+        <button type="button" id="new-user-button" class="nav-item" data-bs-toggle="modal" data-bs-target="#addUserModal">
+          Add New User
+        </button>
+        <button type="button" id="delete-user-button" class="nav-item" data-bs-toggle="modal" data-bs-target="#deleteUserModal">
+          Delete User
+        </button>
+      </div>
+      <div class="title-container">
+        <h1><%= user.user_name %> Travel Tracker</h1>
+        <p>Total Countries: <%=visitedCountryCodes.length%></p>
+      </div>
+      <%-include('map.ejs')%>
+      <div class="edit-tracker-container">
+        <div class="edit-country-container">
+          <h2>Add Country</h2>
+          <form class="add-country-form" action="/add-country" method="post">
+            <input type="hidden" class="add-country-input" name="id" value="<%= user.id %>" />
+            <input class="form-input" name="country" />
+            <input class="add-country-submit" type="submit" value="Submit"/>
+          </form>
+        </div>
+        <div class="delete-country-container">
+          <h2>Delete Country</h2>
+          <form class=delete-country-form" action="/delete-country" method="post">
+            <input type="hidden" class="add-country-input" name="id" value="<%= user.id %>" />
+            <input class="form-input" name="country" />
+            <input class="add-country-submit" type="submit" value="Submit"/>
+          </form>
+        </div>
+      </div>
+    <% } else { %>
+      <div class="no-users-container">
+        <h1>Your Family and Friends Travel Tracker!</h1>
+        <button type="button" id="new-user-button-no-users" class="nav-item" data-bs-toggle="modal" data-bs-target="#addUserModal">
+        Add New User
+        </button>
+      </div>
+     <% } %> 
+    <!-- Add User Modal -->
+    <div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Add New User</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form id="new-user-form" action="/add-new-user" method="post">
+              <input name="new-user" placeholder="New user's name..." required>
+              <input name="colour" placeholder="New user's colour..." required>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" form="new-user-form" class="btn btn-primary">Save changes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Delete User Modal -->
+    <div class="modal fade" id="deleteUserModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Delete User</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form id="delete-user-form" action="/delete-user" method="post">
+              <input type="hidden" name="current-user" value="<%= user.id %>">
+              <input name="delete-user" placeholder="New user's name...">
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" form="delete-user-form" class="btn btn-primary">Save changes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      const country_codes = "<%= visitedCountryCodes %>".split(",")
+    console.log(typeof ("<%= visitedCountryCodes %>"))
+    country_codes.forEach(code => {
+      const element = document.getElementById(code)
+      if (element){
+        element.style.fill = "<%= user.colour %>";
+      }
+    });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+  </body>
+</html>
